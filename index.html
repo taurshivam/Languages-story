@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scripts, Tongues &amp; Code — A Field Guide to How Things Are Written</title>
+<style>
+  :root{
+    --ink:#15161c;
+    --panel:#1c1e26;
+    --panel-2:#22242e;
+    --hair:#33353f;
+    --paper:#ece6d6;
+    --paper-dim:#a9a690;
+    --gold:#c9a227;
+    --jade:#2e9e86;
+    --blue:#4c8dff;
+    --accent: var(--gold);
+    --accent-dim: rgba(201,162,39,0.15);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(201,162,39,0.06), transparent 40%),
+      radial-gradient(circle at 85% 10%, rgba(76,141,255,0.05), transparent 40%),
+      var(--ink);
+    color:var(--paper);
+    font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:Georgia,'Iowan Old Style','Times New Roman',serif;
+    font-weight:normal;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+
+  /* ===== HERO ===== */
+  .hero{
+    padding:76px 28px 40px;
+    text-align:center;
+    border-bottom:1px solid var(--hair);
+    position:relative;
+    overflow:hidden;
+  }
+  .glyph-rain{
+    position:absolute;inset:0;
+    font-size:15px;
+    color:rgba(236,230,214,0.05);
+    white-space:pre;
+    pointer-events:none;
+    font-family:Georgia,serif;
+    line-height:1.4;
+    user-select:none;
+  }
+  .eyebrow{
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--paper-dim);
+    margin-bottom:18px;
+    position:relative;
+  }
+  .hero h1{
+    font-size:clamp(34px,6vw,64px);
+    margin:0 0 18px;
+    letter-spacing:-0.01em;
+    position:relative;
+  }
+  .hero h1 em{
+    font-style:normal;
+    background:linear-gradient(90deg,var(--gold),var(--jade),var(--blue));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero p.sub{
+    max-width:620px;
+    margin:0 auto;
+    color:var(--paper-dim);
+    font-size:16px;
+    position:relative;
+  }
+  .glyph-wall{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:38px 0 6px;
+    position:relative;
+  }
+  .glyph-btn{
+    width:64px;height:64px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:10px;
+    font-size:28px;
+    font-family:Georgia,serif;
+    cursor:pointer;
+    transition:transform .18s ease, border-color .18s ease, background .18s ease;
+    color:var(--paper);
+  }
+  .glyph-btn:hover{
+    transform:translateY(-4px) scale(1.06);
+    border-color:var(--accent);
+    background:var(--panel-2);
+  }
+  .glyph-cap{
+    font-size:10px;
+    letter-spacing:.06em;
+    color:var(--paper-dim);
+    display:block;
+    text-align:center;
+    margin-top:4px;
+    width:64px;
+  }
+  .glyph-item{display:flex;flex-direction:column;align-items:center;}
+
+  /* ===== NAV / CHAPTER TABS ===== */
+  .chapter-nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(21,22,28,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--hair);
+  }
+  .chapter-nav .wrap{
+    display:flex;
+    gap:6px;
+    padding:14px 28px;
+    overflow-x:auto;
+  }
+  .chapter-btn{
+    background:none;
+    border:1px solid var(--hair);
+    color:var(--paper-dim);
+    padding:10px 18px;
+    border-radius:999px;
+    font-size:13px;
+    letter-spacing:.03em;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all .18s ease;
+    display:flex;align-items:center;gap:8px;
+  }
+  .chapter-btn .n{
+    font-family:Georgia,serif;
+    font-size:15px;
+  }
+  .chapter-btn.active{
+    color:var(--ink);
+    background:var(--accent);
+    border-color:var(--accent);
+    font-weight:600;
+  }
+  .chapter-btn:not(.active):hover{
+    border-color:var(--accent);
+    color:var(--paper);
+  }
+
+  /* ===== SECTIONS ===== */
+  .chapter{display:none;padding:56px 0 90px;}
+  .chapter.active{display:block;animation:fadeIn .4s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  .chapter-head{margin-bottom:34px;}
+  .chapter-head .tag{
+    color:var(--accent);
+    font-size:12px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    margin-bottom:10px;
+    display:block;
+  }
+  .chapter-head h2{font-size:clamp(26px,4vw,38px);margin:0 0 10px;}
+  .chapter-head p{color:var(--paper-dim);max-width:680px;margin:0;font-size:15px;}
+
+  .filters{
+    display:flex;flex-wrap:wrap;gap:8px;
+    margin:28px 0 30px;
+  }
+  .filter-chip{
+    background:var(--panel);
+    border:1px solid var(--hair);
+    color:var(--paper-dim);
+    padding:7px 14px;
+    border-radius:8px;
+    font-size:12.5px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .filter-chip:hover{border-color:var(--accent);color:var(--paper);}
+  .filter-chip.active{
+    background:var(--accent-dim);
+    border-color:var(--accent);
+    color:var(--paper);
+    font-weight:600;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+    gap:14px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:12px;
+    padding:18px 20px;
+    cursor:pointer;
+    transition:border-color .18s ease, transform .18s ease, background .18s ease;
+  }
+  .card:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .card.open{background:var(--panel-2);border-color:var(--accent);}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .card-glyph{
+    font-family:Georgia,serif;font-size:26px;
+    width:42px;height:42px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--accent-dim);
+    border-radius:8px;
+    color:var(--accent);
+  }
+  .card h3{font-size:16.5px;margin:0 0 3px;color:var(--paper);}
+  .card .meta{font-size:11.5px;color:var(--paper-dim);letter-spacing:.02em;text-transform:uppercase;}
+  .card .blurb{font-size:13.5px;color:var(--paper-dim);margin-top:10px;}
+  .card .detail{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .3s ease, margin-top .3s ease;
+    font-size:13.5px;
+    color:var(--paper);
+    border-top:1px dashed var(--hair);
+  }
+  .card.open .detail{max-height:400px;margin-top:14px;padding-top:12px;}
+  .card .detail b{color:var(--accent);}
+  .chev{
+    color:var(--paper-dim);
+    font-size:12px;
+    transition:transform .25s ease;
+    flex:none;
+    margin-top:6px;
+  }
+  .card.open .chev{transform:rotate(180deg);color:var(--accent);}
+
+  /* Family tree strip (languages chapter) */
+  .tree-strip{
+    display:flex;gap:10px;overflow-x:auto;
+    padding:4px 0 16px;
+    margin-bottom:6px;
+  }
+  .tree-node{
+    flex:none;
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:10px;
+    padding:12px 16px;
+    min-width:150px;
+    font-size:12.5px;
+    cursor:pointer;
+  }
+  .tree-node.active{border-color:var(--jade);background:rgba(46,158,134,0.12);}
+  .tree-node b{display:block;font-size:14px;margin-bottom:3px;font-family:Georgia,serif;}
+  .tree-node span{color:var(--paper-dim);}
+
+  /* Timeline (machine chapter) */
+  .timeline{
+    position:relative;
+    margin:10px 0 40px;
+    padding-left:26px;
+    border-left:2px solid var(--hair);
+  }
+  .t-item{position:relative;padding:0 0 26px 18px;}
+  .t-item::before{
+    content:'';
+    position:absolute;left:-27px;top:3px;
+    width:12px;height:12px;border-radius:50%;
+    background:var(--blue);
+    border:2px solid var(--ink);
+    box-shadow:0 0 0 2px var(--blue);
+  }
+  .t-item .yr{font-family:Georgia,serif;color:var(--blue);font-size:15px;margin-bottom:2px;}
+  .t-item .ti{font-weight:600;font-size:14.5px;}
+  .t-item .td{color:var(--paper-dim);font-size:13px;margin-top:2px;}
+
+  footer{
+    text-align:center;padding:36px 20px 60px;
+    color:var(--paper-dim);
+    font-size:12.5px;
+    border-top:1px solid var(--hair);
+  }
+  footer a{color:var(--accent);}
+
+  @media(max-width:640px){
+    .hero{padding:56px 18px 30px;}
+    .glyph-btn{width:52px;height:52px;font-size:22px;}
+    .glyph-cap{width:52px;}
+  }
+</style>
+</head>
+<body>
+
+<section class="hero" id="top">
+  <div class="glyph-rain" id="glyphRain"></div>
+  <span class="eyebrow">A field guide, in one page</span>
+  <h1>How Humans <em>Write</em>, <em>Speak</em> &amp; tell <em>Machines</em> what to do</h1>
+  <p class="sub">Three layers of human communication technology: the <b>scripts</b> we write in, the <b>spoken tongues and dialects</b> those scripts capture, and the <b>artificial languages</b> we invented so machines could understand us back.</p>
+  <div class="glyph-wall" id="glyphWall"></div>
+</section>
+
+<nav class="chapter-nav">
+  <div class="wrap" id="chapterNav"></div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ===================== CHAPTER 1: SCRIPTS ===================== -->
+  <section class="chapter" data-chapter="scripts">
+    <div class="chapter-head">
+      <span class="tag">Writing Systems</span>
+      <h2>Scripts — the visual code for sound &amp; meaning</h2>
+      <p>A script is the set of symbols used to write one or more languages. The same spoken language can sometimes be written in more than one script (e.g. Hindi/Marathi in Devanagari, Urdu in Perso-Arabic) — script and language are not the same thing. Tap the glyphs above or the filters below to explore.</p>
+    </div>
+    <div class="filters" id="scriptFilters"></div>
+    <div class="grid" id="scriptGrid"></div>
+  </section>
+
+  <!-- ===================== CHAPTER 2: SPOKEN LANGUAGES ===================== -->
+  <section class="chapter" data-chapter="languages">
+    <div class="chapter-head">
+      <span class="tag">Spoken Tongues</span>
+      <h2>Language families &amp; dialects</h2>
+      <p>Around 7,000 living languages are usually grouped into a few dozen large families based on shared ancestry. Within any one language, dialects branch further by region — Marathi alone has half a dozen recognisable regional forms across Maharashtra.</p>
+    </div>
+    <div class="tree-strip" id="familyStrip"></div>
+    <div class="filters" id="langFilters"></div>
+    <div class="grid" id="langGrid"></div>
+  </section>
+
+  <!-- ===================== CHAPTER 3: MACHINE LANGUAGES ===================== -->
+  <section class="chapter" data-chapter="machine">
+    <div class="chapter-head">
+      <span class="tag">Artificial Languages</span>
+      <h2>Languages made for machines</h2>
+      <p>Computers only truly understand electrical pulses (binary). Every layer above that — assembly, compiled languages, scripting languages, markup, query languages — is a language humans built to make instructing machines easier for <em>us</em>, not for them.</p>
+    </div>
+    <div class="filters" id="machFilters"></div>
+    <div class="grid" id="machGrid"></div>
+
+    <h3 style="margin-top:50px;font-size:19px;color:var(--paper);">A rough timeline</h3>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+</div>
+
+<footer>
+  Reference infographic for general understanding — families and classifications are simplified for clarity; linguists and computer scientists debate edge cases in almost every category above.
+</footer>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+
+const SCRIPTS = [
+ {id:'devanagari',glyph:'अ',name:'Devanagari',family:'Brahmic',type:'Abugida',blurb:'Consonant-vowel syllabic script, top connecting bar.',detail:'Used for <b>Hindi, Marathi, Nepali, Sanskrit, Konkani</b>. Descended from the ancient Brahmi script. Each consonant carries an inherent vowel that is modified by attached signs (matras) — so it is technically an <b>abugida</b>, not a true alphabet.'},
+ {id:'bengali',glyph:'অ',name:'Bengali–Assamese',family:'Brahmic',type:'Abugida',blurb:'Rounded Brahmic script for eastern India.',detail:'Used for <b>Bengali, Assamese, Manipuri (Meitei, alongside its own script), Bishnupriya</b>. Shares the same Brahmi ancestry as Devanagari but evolved a distinct rounded letterform.'},
+ {id:'tamil',glyph:'அ',name:'Tamil',family:'Brahmic',type:'Abugida',blurb:'Curved script, one of the oldest living scripts.',detail:'Used to write <b>Tamil</b>, one of the classical languages of India, with inscriptions dating back over 2,000 years. Also Brahmi-derived but developed independently in South India, giving it very different curved shapes.'},
+ {id:'telugu-kannada',glyph:'అ',name:'Telugu–Kannada',family:'Brahmic',type:'Abugida',blurb:'Rounded Dravidian scripts with domed letterforms.',detail:'Two closely related sibling scripts used for <b>Telugu</b> and <b>Kannada</b> respectively, both Brahmic abugidas known for their circular, dome-topped letterforms.'},
+ {id:'gurmukhi',glyph:'ਅ',name:'Gurmukhi',family:'Brahmic',type:'Abugida',blurb:'Script created for Sikh scripture.',detail:'Used to write <b>Punjabi</b> in India. Standardised by the second Sikh Guru, Guru Angad, to record the Guru Granth Sahib.'},
+ {id:'latin',glyph:'A',name:'Latin',family:'Alphabet',type:'True alphabet',blurb:'World\'s most widely used script.',detail:'Originated with the Romans from Old Italic / Greek roots. Used natively for <b>English, Spanish, French, German, Indonesian, Swahili, Vietnamese</b> and dozens more, plus as a romanisation system for many others.'},
+ {id:'cyrillic',glyph:'Я',name:'Cyrillic',family:'Alphabet',type:'True alphabet',blurb:'Developed from Greek for Slavic tongues.',detail:'Created in the 9th century for Old Church Slavonic. Today writes <b>Russian, Ukrainian, Bulgarian, Serbian, Mongolian</b> and others.'},
+ {id:'greek',glyph:'Ω',name:'Greek',family:'Alphabet',type:'True alphabet',blurb:'The ancestor of both Latin and Cyrillic.',detail:'The first script to fully represent vowels as distinct letters — a foundational innovation. Still used to write <b>Modern Greek</b>, and its letters live on in maths and science notation worldwide.'},
+ {id:'arabic',glyph:'ا',name:'Arabic',family:'Abjad',type:'Abjad (consonant-based)',blurb:'Cursive right-to-left script.',detail:'Used for <b>Arabic, Persian/Farsi (Perso-Arabic), Urdu, Pashto, Sindhi, Kashmiri</b> and more. As an abjad, short vowels are usually left unwritten and inferred by the reader.'},
+ {id:'hebrew',glyph:'א',name:'Hebrew',family:'Abjad',type:'Abjad (consonant-based)',blurb:'Right-to-left script for Hebrew.',detail:'Used to write <b>Modern Hebrew</b> and classical Biblical Hebrew, plus Yiddish (Germanic language, written right-to-left in Hebrew letters).'},
+ {id:'han',glyph:'字',name:'Han (Chinese characters)',family:'Logographic',type:'Logographic',blurb:'Symbols represent whole words or morphemes.',detail:'Used for <b>Mandarin, Cantonese</b> and other Chinese varieties, and historically for Japanese, Korean and Vietnamese. A character usually represents a unit of meaning rather than a sound directly — one of the few major logographic systems still in daily use.'},
+ {id:'kana',glyph:'あ',name:'Kana (Hiragana/Katakana)',family:'Syllabary',type:'Syllabary',blurb:'Japan\'s native phonetic scripts.',detail:'Two syllabaries used alongside borrowed Han characters (Kanji) to write <b>Japanese</b>. Hiragana handles native grammar, Katakana marks foreign loanwords.'},
+ {id:'hangul',glyph:'한',name:'Hangul',family:'Featural alphabet',type:'Featural alphabet',blurb:'Deliberately designed, not evolved.',detail:'Created in 1443 under King Sejong for <b>Korean</b>. Unusually, the shape of each letter reflects the shape the mouth makes to pronounce it — one of the few scripts ever intentionally engineered rather than evolved.'},
+ {id:'ethiopic',glyph:'አ',name:'Ethiopic (Ge\'ez)',family:'Abugida',type:'Abugida',blurb:'East African script, over 1,500 years old.',detail:'Used for <b>Amharic, Tigrinya</b> and other languages of Ethiopia and Eritrea. One of the oldest scripts still in continuous use.'},
+ {id:'brahmi',glyph:'𑀅',name:'Brahmi (historic)',family:'Ancient',type:'Ancestor abugida',blurb:'Ancestor of almost every South &amp; Southeast Asian script.',detail:'Used roughly 3rd century BCE onward, most famously in Emperor Ashoka\'s edicts. Nearly every script used across South and Southeast Asia today — Devanagari, Bengali, Tamil, Thai, Tibetan, Burmese — descends from it.'},
+];
+
+const LANG_FAMILIES = [
+ {id:'all',name:'All families'},
+ {id:'indo-european',name:'Indo-European'},
+ {id:'dravidian',name:'Dravidian'},
+ {id:'sino-tibetan',name:'Sino-Tibetan'},
+ {id:'afro-asiatic',name:'Afro-Asiatic'},
+ {id:'niger-congo',name:'Niger-Congo'},
+ {id:'austronesian',name:'Austronesian'},
+ {id:'other',name:'Other / isolates'},
+];
+
+const LANGUAGES = [
+ {id:'marathi',glyph:'म',name:'Marathi',family:'indo-european',branch:'Indo-Aryan',blurb:'~83 million speakers, official language of Maharashtra.',detail:'Written in Devanagari. Major regional dialects include <b>Varhadi</b> (Vidarbha), <b>Ahirani/Khandeshi</b> (North Maharashtra), <b>Malvani/Konkani-influenced Marathi</b> (Konkan coast), and <b>Standard Marathi</b> (Pune–Mumbai belt used in media &amp; administration).'},
+ {id:'hindi',glyph:'ह',name:'Hindi',family:'indo-european',branch:'Indo-Aryan',blurb:'Official language of the Union of India.',detail:'Written in Devanagari. Major dialect clusters include Khariboli (basis of Standard Hindi), Braj, Awadhi, Bhojpuri and Bundeli — some, like Bhojpuri, are considered separate languages by many linguists.'},
+ {id:'bengali',glyph:'ব',name:'Bengali',family:'indo-european',branch:'Indo-Aryan',blurb:'Second most-spoken language in India; national language of Bangladesh.',detail:'Written in the Bengali script. Regional dialects vary widely between West Bengal, Bangladesh (e.g. Sylheti, Chittagonian) and beyond.'},
+ {id:'punjabi',glyph:'ਪ',name:'Punjabi',family:'indo-european',branch:'Indo-Aryan',blurb:'Written in Gurmukhi in India, Shahmukhi (Perso-Arabic) in Pakistan.',detail:'One of the few major languages regularly written in two entirely different scripts depending on the side of the border.'},
+ {id:'english',glyph:'E',name:'English',family:'indo-european',branch:'Germanic',blurb:'Global lingua franca, ~1.5 billion speakers total.',detail:'Dialects range from British RP, General American, Indian English, Australian English, to creoles like Nigerian Pidgin and Singlish.'},
+ {id:'russian',glyph:'Р',name:'Russian',family:'indo-european',branch:'Slavic',blurb:'Most spoken Slavic language.',detail:'Written in Cyrillic. Regional dialects (Northern, Southern, Central Russian) mainly differ in vowel pronunciation.'},
+ {id:'persian',glyph:'ف',name:'Persian (Farsi)',family:'indo-european',branch:'Iranian',blurb:'Spoken across Iran, Afghanistan (Dari) &amp; Tajikistan (Tajik).',detail:'Same core language, three names and two scripts: Perso-Arabic in Iran/Afghanistan, Cyrillic-based in Tajikistan.'},
+ {id:'tamil',glyph:'த',name:'Tamil',family:'dravidian',branch:'South Dravidian',blurb:'Classical language with unbroken literary tradition.',detail:'Dialects vary by region and caste-register historically; Sri Lankan Tamil and Indian Tamil have noticeably different everyday vocabulary.'},
+ {id:'telugu',glyph:'తె',name:'Telugu',family:'dravidian',branch:'South-Central Dravidian',blurb:'Most-spoken Dravidian language.',detail:'Official language of Andhra Pradesh &amp; Telangana, written in the Telugu script.'},
+ {id:'kannada',glyph:'ಕ',name:'Kannada',family:'dravidian',branch:'South Dravidian',blurb:'Official language of Karnataka.',detail:'Shares script ancestry with Telugu though the two languages themselves are distinct.'},
+ {id:'malayalam',glyph:'മ',name:'Malayalam',family:'dravidian',branch:'South Dravidian',blurb:'Official language of Kerala.',detail:'Closely related to Tamil historically; written in its own distinctive rounded script.'},
+ {id:'mandarin',glyph:'中',name:'Mandarin Chinese',family:'sino-tibetan',branch:'Sinitic',blurb:'Most spoken native language on Earth.',detail:'"Chinese" covers several mutually unintelligible varieties (Mandarin, Cantonese, Wu, Min, Hakka) that share the same writing system, which is why they are often called "dialects" politically even though linguistically they function more like separate languages.'},
+ {id:'cantonese',glyph:'粵',name:'Cantonese',family:'sino-tibetan',branch:'Sinitic',blurb:'Dominant Chinese variety in Hong Kong &amp; Guangdong.',detail:'Shares written characters with Mandarin but is not mutually intelligible when spoken.'},
+ {id:'burmese',glyph:'မ',name:'Burmese',family:'sino-tibetan',branch:'Tibeto-Burman',blurb:'Official language of Myanmar.',detail:'Written in a rounded script descended from the Brahmi family via South Indian scripts.'},
+ {id:'arabic-lang',glyph:'ع',name:'Arabic',family:'afro-asiatic',branch:'Semitic',blurb:'~380 million native speakers across 20+ countries.',detail:'Modern Standard Arabic (used in media/writing) differs greatly from spoken dialects like Egyptian, Levantine, Gulf and Maghrebi Arabic, which can be barely mutually intelligible.'},
+ {id:'hebrew-lang',glyph:'ע',name:'Hebrew',family:'afro-asiatic',branch:'Semitic',blurb:'Revived as a spoken language in the 19th–20th century.',detail:'A rare case of a "dead" liturgical language successfully revived into full daily use in modern Israel.'},
+ {id:'amharic',glyph:'አ',name:'Amharic',family:'afro-asiatic',branch:'Semitic',blurb:'Official language of Ethiopia.',detail:'Written in the ancient Ge\'ez / Ethiopic script, one of the few African languages with its own long-standing native writing system.'},
+ {id:'swahili',glyph:'S',name:'Swahili',family:'niger-congo',branch:'Bantu',blurb:'Lingua franca of East Africa.',detail:'A Bantu language heavily enriched with Arabic loanwords from centuries of Indian Ocean trade, written in the Latin script today.'},
+ {id:'yoruba',glyph:'Y',name:'Yoruba',family:'niger-congo',branch:'Volta-Niger',blurb:'~45 million speakers in West Africa.',detail:'A tonal language where pitch changes word meaning — written in Latin script with added tone marks.'},
+ {id:'malay',glyph:'M',name:'Malay / Indonesian',family:'austronesian',branch:'Malayo-Polynesian',blurb:'Two standardised names for closely related varieties.',detail:'Bahasa Malaysia and Bahasa Indonesia are close enough to be broadly mutually intelligible, similar to the way regional dialects relate to a standard tongue.'},
+ {id:'tagalog',glyph:'T',name:'Tagalog / Filipino',family:'austronesian',branch:'Malayo-Polynesian',blurb:'Basis of the Filipino national language.',detail:'The Philippines has well over 100 regional languages; Tagalog-based Filipino serves as the national standard alongside English.'},
+ {id:'japanese',glyph:'日',name:'Japanese',family:'other',branch:'Japonic (isolate family)',blurb:'No confirmed relatives outside the Ryukyuan languages.',detail:'Written using a unique mix of three scripts at once: Kanji (Han characters), Hiragana and Katakana.'},
+ {id:'korean',glyph:'한',name:'Korean',family:'other',branch:'Koreanic (isolate family)',blurb:'Written in the purpose-built Hangul script.',detail:'North and South Korea have diverged in vocabulary and some pronunciation since division, functioning almost like emerging dialects.'},
+ {id:'basque',glyph:'B',name:'Basque',family:'other',branch:'Language isolate',blurb:'Unrelated to any other living language.',detail:'Spoken in northern Spain / southwestern France, Basque predates the arrival of Indo-European languages in Europe and has no proven relatives.'},
+];
+
+const MACH_CATS = [
+ {id:'all',name:'All'},
+ {id:'lowlevel',name:'Low-level'},
+ {id:'procedural',name:'Procedural / OOP'},
+ {id:'functional',name:'Functional'},
+ {id:'scripting',name:'Scripting'},
+ {id:'markup',name:'Markup &amp; Data'},
+ {id:'query',name:'Query'},
+ {id:'esoteric',name:'Esoteric'},
+];
+
+const MACHINE = [
+ {id:'binary',glyph:'01',name:'Machine code (binary)',cat:'lowlevel',blurb:'The only language a CPU truly runs.',detail:'Raw sequences of 1s and 0s representing instructions and data directly in a processor\'s instruction set. Every other language on this page ultimately gets translated down into this.'},
+ {id:'assembly',glyph:'ASM',name:'Assembly language',cat:'lowlevel',blurb:'Human-readable mnemonics for machine code.',detail:'Uses short mnemonics like MOV, ADD, JMP that map almost 1-to-1 to machine instructions. An "assembler" translates it into binary. Different for every CPU architecture (x86, ARM, RISC-V...).'},
+ {id:'c',glyph:'C',name:'C',cat:'procedural',blurb:'1972 — the ancestor of most modern languages.',detail:'Created at Bell Labs for writing the Unix operating system. Gives very close control over memory, which is why operating systems, embedded devices and game engines are still written in it (or its successor, C++).'},
+ {id:'cpp',glyph:'C++',name:'C++',cat:'procedural',blurb:'C with objects, added in 1985.',detail:'Adds object-oriented and generic programming to C while keeping low-level control. Used heavily in game engines, browsers and high-performance systems.'},
+ {id:'java',glyph:'J',name:'Java',cat:'procedural',blurb:'"Write once, run anywhere" — 1995.',detail:'Compiles to an intermediate bytecode run by the Java Virtual Machine, so the same program runs unmodified on Windows, Linux, macOS, or Android. Dominant in enterprise and Android app development.'},
+ {id:'csharp',glyph:'C#',name:'C#',cat:'procedural',blurb:'Microsoft\'s answer to Java, 2000.',detail:'Object-oriented language for the .NET platform; widely used for Windows software and the Unity game engine.'},
+ {id:'python',glyph:'Py',name:'Python',cat:'scripting',blurb:'Readable syntax, huge ecosystem, 1991.',detail:'Named after Monty Python, not the snake. Dominant today in data science, AI/ML, automation and teaching, thanks to syntax that reads close to plain English.'},
+ {id:'javascript',glyph:'JS',name:'JavaScript',cat:'scripting',blurb:'The language of the web browser, 1995.',detail:'Originally built in 10 days to make web pages interactive. Now also runs on servers (Node.js) and powers most interactive websites and web apps.'},
+ {id:'ruby',glyph:'Rb',name:'Ruby',cat:'scripting',blurb:'"Optimised for developer happiness," 1995.',detail:'Known for the Ruby on Rails web framework, which popularised rapid web-app development conventions widely copied since.'},
+ {id:'bash',glyph:'$',name:'Bash / Shell',cat:'scripting',blurb:'The language of the command line.',detail:'Used to chain together system commands and automate tasks directly in a Unix/Linux terminal.'},
+ {id:'haskell',glyph:'λ',name:'Haskell',cat:'functional',blurb:'Pure functional programming, 1990.',detail:'Functions behave like mathematical functions with no side effects, which makes programs easier to reason about and test — but takes a different mindset than "step-by-step" languages.'},
+ {id:'lisp',glyph:'()',name:'Lisp',cat:'functional',blurb:'1958 — one of the oldest languages still used today.',detail:'Famous for representing code itself as data (nested lists), which makes it unusually powerful for writing programs that write programs. A major early AI-research language.'},
+ {id:'sql',glyph:'DB',name:'SQL',cat:'query',blurb:'The near-universal language for databases.',detail:'"Structured Query Language" — instead of describing steps, you describe what data you want (SELECT ... FROM ... WHERE ...) and the database figures out how to get it.'},
+ {id:'graphql',glyph:'GQL',name:'GraphQL',cat:'query',blurb:'A newer query language for APIs, 2015.',detail:'Lets an app ask a server for exactly the fields it needs in one request, developed at Facebook to replace many separate API calls.'},
+ {id:'html',glyph:'<>',name:'HTML',cat:'markup',blurb:'Not a programming language — a markup language.',detail:'Describes the structure of a web page (headings, paragraphs, links, images) rather than instructions to execute. This very page is written in it.'},
+ {id:'xml-json',glyph:'{ }',name:'XML / JSON / YAML',cat:'markup',blurb:'Formats for storing and exchanging data.',detail:'JSON (JavaScript Object Notation) and XML are the two most common formats for apps and servers to exchange structured data; YAML is a more human-readable alternative often used for configuration files.'},
+ {id:'verilog',glyph:'⚡',name:'VHDL / Verilog',cat:'lowlevel',blurb:'Languages that describe hardware itself.',detail:'"Hardware description languages" used to design the actual digital circuits inside chips — arguably one level below even machine code.'},
+ {id:'brainfuck',glyph:'?!',name:'Brainfuck',cat:'esoteric',blurb:'An intentionally minimal, near-unreadable language, 1993.',detail:'Built from just 8 symbols as an experiment in extreme minimalism, mainly to see how small a working programming language could be — not meant for real-world use.'},
+ {id:'whitespace',glyph:'␣',name:'Whitespace',cat:'esoteric',blurb:'A language where only spaces, tabs &amp; newlines matter.',detail:'All visible characters are ignored entirely; the program is written using just invisible whitespace characters — a novelty language created as a programming joke.'},
+];
+
+const TIMELINE = [
+ {yr:'1940s',t:'Machine code & wiring',d:'Early computers programmed by physically rewiring circuits or entering raw binary.'},
+ {yr:'1949',t:'Assembly language',d:'Mnemonic codes replace raw binary, making low-level programming humanly readable.'},
+ {yr:'1957',t:'Fortran',d:'First widely used high-level compiled language, built for scientific calculation.'},
+ {yr:'1958',t:'Lisp',d:'Introduces treating code as data; still influential in AI and functional programming.'},
+ {yr:'1972',t:'C',d:'Becomes the base for Unix and countless later languages (C++, Java, JavaScript syntax all borrow from it).'},
+ {yr:'1991',t:'Python & the Web (HTML)',d:'Python released; Tim Berners-Lee also publishes HTML, birthing the web as a document format.'},
+ {yr:'1995',t:'Java, JavaScript, Ruby & PHP',d:'A single year that reshapes both enterprise software and the interactive web.'},
+ {yr:'2000s',t:'Query & data languages mature',d:'SQL becomes near-universal; XML, then JSON, standardise how systems exchange data.'},
+ {yr:'2010s+',t:'GraphQL, Rust, and AI-era tooling',d:'Newer languages emphasise safety (Rust) and flexible data-fetching (GraphQL) as software scales globally.'},
+];
+
+/* ============================================================
+   RENDER HELPERS
+   ============================================================ */
+function el(tag, cls, html){
+  const e=document.createElement(tag);
+  if(cls) e.className=cls;
+  if(html!==undefined) e.innerHTML=html;
+  return e;
+}
+
+function renderCards(container, items, opts){
+  container.innerHTML='';
+  items.forEach(item=>{
+    const card=el('div','card');
+    card.dataset.id=item.id;
+    card.innerHTML=`
+      <div class="card-top">
+        <div style="display:flex;gap:12px;">
+          <div class="card-glyph">${item.glyph}</div>
+          <div>
+            <h3>${item.name}</h3>
+            <div class="meta">${opts.metaFn(item)}</div>
+          </div>
+        </div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="blurb">${item.blurb}</div>
+      <div class="detail">${item.detail}</div>
+    `;
+    card.addEventListener('click', ()=>{
+      const wasOpen=card.classList.contains('open');
+      container.querySelectorAll('.card.open').forEach(c=>c.classList.remove('open'));
+      if(!wasOpen) card.classList.add('open');
+    });
+    container.appendChild(card);
+  });
+}
+
+function renderFilters(container, list, active, onPick, labelKey){
+  container.innerHTML='';
+  list.forEach(f=>{
+    const chip=el('button','filter-chip'+(f.id===active?' active':''), f.name || f);
+    chip.addEventListener('click',()=>onPick(f.id||f));
+    container.appendChild(chip);
+  });
+}
+
+/* ---------- SCRIPTS CHAPTER ---------- */
+const scriptFamilies=['All',...new Set(SCRIPTS.map(s=>s.family))];
+let scriptActive='All';
+function drawScripts(){
+  renderFilters(document.getElementById('scriptFilters'), scriptFamilies.map(f=>({id:f,name:f})), scriptActive, (id)=>{scriptActive=id;drawScripts();});
+  const items = scriptActive==='All'? SCRIPTS : SCRIPTS.filter(s=>s.family===scriptActive);
+  renderCards(document.getElementById('scriptGrid'), items, {metaFn:(i)=>`${i.family} · ${i.type}`});
+}
+
+/* ---------- LANGUAGES CHAPTER ---------- */
+let langActive='all';
+function drawFamilyStrip(){
+  const strip=document.getElementById('familyStrip');
+  strip.innerHTML='';
+  LANG_FAMILIES.forEach(f=>{
+    const count = f.id==='all'? LANGUAGES.length : LANGUAGES.filter(l=>l.family===f.id).length;
+    const node=el('div','tree-node'+(f.id===langActive?' active':''));
+    node.innerHTML=`<b>${f.name}</b><span>${count} in list</span>`;
+    node.addEventListener('click',()=>{langActive=f.id;drawLanguages();});
+    strip.appendChild(node);
+  });
+}
+function drawLanguages(){
+  drawFamilyStrip();
+  document.getElementById('langFilters').innerHTML='';
+  const items = langActive==='all'? LANGUAGES : LANGUAGES.filter(l=>l.family===langActive);
+  renderCards(document.getElementById('langGrid'), items, {metaFn:(i)=>`${LANG_FAMILIES.find(f=>f.id===i.family).name} · ${i.branch}`});
+}
+
+/* ---------- MACHINE CHAPTER ---------- */
+let machActive='all';
+function drawMachine(){
+  renderFilters(document.getElementById('machFilters'), MACH_CATS, machActive, (id)=>{machActive=id;drawMachine();});
+  const items = machActive==='all'? MACHINE : MACHINE.filter(m=>m.cat===machActive);
+  renderCards(document.getElementById('machGrid'), items, {metaFn:(i)=>MACH_CATS.find(c=>c.id===i.cat).name});
+}
+function drawTimeline(){
+  const tl=document.getElementById('timeline');
+  tl.innerHTML='';
+  TIMELINE.forEach(t=>{
+    const item=el('div','t-item');
+    item.innerHTML=`<div class="yr">${t.yr}</div><div class="ti">${t.t}</div><div class="td">${t.d}</div>`;
+    tl.appendChild(item);
+  });
+}
+
+/* ---------- HERO GLYPH WALL ---------- */
+function drawGlyphWall(){
+  const wall=document.getElementById('glyphWall');
+  const featured=['devanagari','latin','han','arabic','cyrillic','hangul','greek','hebrew','kana','ethiopic','tamil','brahmi'];
+  featured.forEach(id=>{
+    const s=SCRIPTS.find(x=>x.id===id);
+    if(!s) return;
+    const wrap=el('div','glyph-item');
+    const btn=el('div','glyph-btn',s.glyph);
+    btn.title=s.name;
+    btn.addEventListener('click',()=>{
+      showChapter('scripts');
+      scriptActive=s.family; drawScripts();
+      document.getElementById('scripts-sec') && document.getElementById('scripts-sec').scrollIntoView();
+      window.scrollTo({top: document.querySelector('.chapter-nav').offsetTop, behavior:'smooth'});
+    });
+    wrap.appendChild(btn);
+    wrap.appendChild(el('span','glyph-cap',s.name.split(' ')[0]));
+    wall.appendChild(wrap);
+  });
+}
+
+/* ---------- CHAPTER NAV ---------- */
+const CHAPTERS=[
+  {id:'scripts',label:'Scripts',n:'字',accent:'--gold'},
+  {id:'languages',label:'Spoken Languages & Dialects',n:'अ',accent:'--jade'},
+  {id:'machine',label:'Machine Languages',n:'</>',accent:'--blue'},
+];
+function drawNav(){
+  const nav=document.getElementById('chapterNav');
+  nav.innerHTML='';
+  CHAPTERS.forEach(c=>{
+    const btn=el('button','chapter-btn'+(c.id==='scripts'?' active':''));
+    btn.innerHTML=`<span class="n">${c.n}</span> ${c.label}`;
+    btn.dataset.id=c.id;
+    btn.addEventListener('click',()=>showChapter(c.id));
+    nav.appendChild(btn);
+  });
+}
+function showChapter(id){
+  document.querySelectorAll('.chapter').forEach(s=>s.classList.toggle('active', s.dataset.chapter===id));
+  document.querySelectorAll('.chapter-btn').forEach(b=>b.classList.toggle('active', b.dataset.id===id));
+  const c=CHAPTERS.find(x=>x.id===id);
+  document.documentElement.style.setProperty('--accent', `var(${c.accent})`);
+  document.documentElement.style.setProperty('--accent-dim', c.accent==='--gold'?'rgba(201,162,39,0.15)':c.accent==='--jade'?'rgba(46,158,134,0.15)':'rgba(76,141,255,0.15)');
+}
+
+/* ---------- background glyph rain ---------- */
+function drawGlyphRain(){
+  const chars='अ ব ஆ ا Я Ω 字 한 あ א 01 λ <> { }'.split(' ');
+  let out='';
+  for(let i=0;i<400;i++){ out += chars[Math.floor(Math.random()*chars.length)] + '  '; if(i%20===0) out+='\n'; }
+  document.getElementById('glyphRain').textContent=out;
+}
+
+/* ---------- INIT ---------- */
+drawGlyphRain();
+drawNav();
+drawGlyphWall();
+drawScripts();
+drawLanguages();
+drawMachine();
+drawTimeline();
+document.querySelector('.chapter[data-chapter="scripts"]').classList.add('active');
+</script>
+</body>
+</html>
